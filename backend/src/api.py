@@ -62,7 +62,7 @@ def retrieve_drinks():
 @app.route('/drinks-detail', methods=['GET'])
 def retrieve_drinks_detail():
     req_drinks_detail = Drink.query.all()
-    return jsonify({
+    return json.dumps({
         "success": True,
         "drinks": req_drinks_detail,
     })
@@ -79,7 +79,7 @@ def retrieve_drinks_detail():
 @app.route('/drinks', methods=['GET'])
 def create_new_drink():
 
-    return jsonify({
+    return json.dumps({
         "success": True,
     })
 
@@ -96,7 +96,7 @@ def create_new_drink():
 '''
 @app.route('/drinks/<int:drink_id>', methods=['PATCH'])
 def update_drink(drink_id):
-    return jsonify({
+    return json.dumps({
         "success": True
     })
 
@@ -112,7 +112,7 @@ def update_drink(drink_id):
 '''
 @app.route('/drinks/<int:drink_id>', methods=['DELETE'])
 def delete_specific_drink(drink_id):
-    return jsonify({
+    return json.dumps({
         "success": True
     })
 
@@ -124,7 +124,7 @@ Example error handling for unprocessable entity
 
 @app.errorhandler(422)
 def unprocessable(error):
-    return jsonify({
+    return json.dumps({
         "success": False,
         "error": 422,
         "message": "unprocessable"
@@ -143,7 +143,7 @@ def unprocessable(error):
 '''
 @app.errorhandler(404)
 def detect_404_error():
-    return jsonify({
+    return json.dumps({
         "success": False,
         "error": 404,
         "message": "resource not found"
