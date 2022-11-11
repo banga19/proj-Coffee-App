@@ -94,7 +94,11 @@ def create_new_drink():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
-
+@app.route('/drinks/<int:drink_id>', methods=['PATCH'])
+def update_drink(drink_id):
+    return jsonify({
+        "success": True
+    })
 
 '''
 @TODO implement endpoint
