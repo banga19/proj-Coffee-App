@@ -17,9 +17,23 @@ CORS(app)
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 !! Running this funciton will add one
 '''
-# db_drop_and_create_all()
+db_drop_and_create_all()
+
 
 # ROUTES
+DRINKS_PER_PAGE = 10
+
+# Global Function to GET ALL Drinks
+
+# create pagination effect for the app
+def paginated_drinks(request, selection):
+    page = request.args.get('page', 1, type=int)
+    start = (page - 1) * DRINKS_PER_PAGE
+    end = start + DRINKS_PER_PAGE
+
+    available_drinks = [Drink.format() for question in selection]
+    current_drinks = available_drinks[start:end] 
+
 '''
 @TODO implement endpoint
     GET /drinks
@@ -28,6 +42,15 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks', methods=['GET'])
+def retrieve_drinks():
+    req_drinks = paginated_drinks()
+
+    return json({
+        "success": True,
+        "drinks": req_drinks,
+
+    })
 
 
 '''
