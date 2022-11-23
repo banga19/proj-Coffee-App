@@ -41,6 +41,7 @@ db_drop_and_create_all()
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+@app.route("/", methods=['GET'])
 @app.route('/drinks', methods=['GET'])
 def retrieve_drinks():
     req_drinks = Drink.query.order_by(Drink.id)
@@ -60,6 +61,7 @@ def retrieve_drinks():
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks-detail', methods=['GET'])
+@requires_auth('get: drinks-detail')
 def retrieve_drinks_detail():
     req_drinks_detail = Drink.query.all()
     return json.dumps({
