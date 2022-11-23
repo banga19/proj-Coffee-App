@@ -78,8 +78,9 @@ def retrieve_drinks_detail():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
-@app.route('/drinks', methods=['GET'])
-def create_new_drink():
+@app.route('/drinks', methods=['POST'])
+@requires_auth('post: drinks')
+def add_new_drink(jwt):
 
     return json.dumps({
         "success": True,
@@ -96,8 +97,9 @@ def create_new_drink():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
-@app.route('/drinks/<int:drink_id>', methods=['PATCH'])
-def update_drink(drink_id):
+@app.route('/drinks/<int:id>', methods=['PATCH'])
+@requires_auth('patch:drinks')
+def update_drink(jwt, id):
     return json.dumps({
         "success": True
     })
