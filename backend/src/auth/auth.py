@@ -30,8 +30,35 @@ class AuthError(Exception):
         it should raise an AuthError if the header is malformed
     return the token part of the header
 '''
+
 def get_token_auth_header():
-   raise Exception('Not Implemented')
+   if 'Authorization' not in request.headers:
+    raise AuthError({
+        'code': 'Invalid claims',
+        'description': 'No header Found'
+    }, 401)
+
+    req_auth_header = request.headers['Authorization']
+    req_auth_path = req_auth_header.split(' ')
+
+    if len(req_auth_path) !=2:
+        raise AuthError({
+            'code': 'invalid claims',
+            'description': 'Wrong claims'
+        }, 401)
+    
+    if req_auth_path[0].lower() != 'bearer':
+        raise AuthError({
+            'code': 'Invalid_claims',
+            'description': 'Incorrect JWT'
+        }, 401)
+    
+    return (req_auth_path[1])
+
+
+
+
+
 
 '''
 @TODO implement check_permissions(permission, payload) method
