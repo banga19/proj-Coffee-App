@@ -79,19 +79,6 @@ def add_new_drink(jwt):
 
 
 
-
-'''
-@TODO implement endpoint
-    PATCH /drinks/<id>
-        where <id> is the existing model id
-        it should respond with a 404 error if <id> is not found
-        it should update the corresponding row for <id>
-        it should require the 'patch:drinks' permission
-        it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
-        or appropriate status code indicating reason for failure
-'''
-
 # Endpoint below will update DRINKS using the id
 @app.route('/drinks/<int:id>', methods=['PATCH'])
 @requires_auth('patch:drinks')
@@ -126,21 +113,20 @@ def update_drink_list(jwt, id):
         abort(404)
 
 
-'''
-@TODO implement endpoint
-    DELETE /drinks/<id>
-        where <id> is the existing model id
-        it should respond with a 404 error if <id> is not found
-        it should delete the corresponding row for <id>
-        it should require the 'delete:drinks' permission
-    returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
-        or appropriate status code indicating reason for failure
-'''
+#Endpoint below deletes a DRINK according to it's id
 @app.route('/drinks/<int:id>', methods=['DELETE'])
-@requires_auth('delete:drinks')
+@requires_auth('patch:drinks')
 def delete_specific_drink(jwt, id):
-    return json.dumps({
-        "success": True
+    drink_to_delete = Drink.query.get(id)
+
+    if drink_to_delete is None:
+        abort (404)
+    
+    drink_to_delete.delete()
+
+    return jsonify({
+        "success": True,
+        "deteted": id
     })
 
 # Error Handling
