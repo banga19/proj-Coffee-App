@@ -91,12 +91,40 @@ def add_new_drink(jwt):
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
+
+# Endpoint below will update DRINKS using the id
 @app.route('/drinks/<int:id>', methods=['PATCH'])
 @requires_auth('patch:drinks')
-def update_drink(jwt, id):
-    return json.dumps({
-        "success": True
-    })
+def update_drink_list(jwt, id):
+    drink_to_update = Drink.query.get(id)
+    drink_body = request.get_json()
+
+    if drink_body is not None:
+        new_title = drink_body.get('title', None)
+        new_recipe = drink_body.get('recipe', None)
+
+        if drink_to_update is None:
+            abort(404)
+        
+        if new_title is not None:
+            drink_to_update.title = new_title
+        
+        if new_recipe is not None:
+            new_recipe = json.dumps(new_recipe)
+            drink_to_update.recipe = new_recipe
+
+        drink_to_update = Drink.query.all()
+        drink_short = [drink.short() for drink in drink_to_update]
+        drink_to_update.insert()
+
+
+        return jsonify({
+            "success": True,
+            "drinks": drink_to_update
+        })
+    else:
+        abort(404)
+
 
 '''
 @TODO implement endpoint
