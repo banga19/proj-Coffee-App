@@ -145,7 +145,7 @@ def unprocessable(error):
 
 # 404 error handler endpoint
 @app.errorhandler(404)
-def detect_404_error():
+def detect_404_error(error):
     return jsonify({
         "success": False,
         "error": 404,
