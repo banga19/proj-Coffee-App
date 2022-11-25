@@ -135,7 +135,7 @@ def delete_specific_drink(jwt, id):
 
 @app.errorhandler(422)
 def unprocessable(error):
-    return json.dumps({
+    return jsonify({
         "success": False,
         "error": 422,
         "message": "request cannot be processed"
@@ -147,10 +147,10 @@ def unprocessable(error):
 '''
 @app.errorhandler(404)
 def detect_404_error():
-    return json.dumps({
+    return jsonify({
         "success": False,
         "error": 404,
-        "message": "resource not found"
+        "message": "Requested resource not cannot be found"
     }), 404
 
 
