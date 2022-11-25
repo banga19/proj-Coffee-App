@@ -20,46 +20,38 @@ class AuthError(Exception):
         self.status_code = status_code
 
 
+
+
+
+
 ## Auth Header
-
-'''
-@TODO implement get_token_auth_header() method
-    it should attempt to get the header from the request
-        it should raise an AuthError if no header is present
-    it should attempt to split bearer and the token
-        it should raise an AuthError if the header is malformed
-    return the token part of the header
-'''
-
 def get_token_auth_header():
-   if 'Authorization' not in request.headers:
-    raise AuthError({
-        'code': 'Invalid claims',
-        'description': 'No header Found'
-    }, 401)
-
-    req_auth_header = request.headers['Authorization']
-    req_auth_path = req_auth_header.split(' ')
-
-    if len(req_auth_path) !=2:
+    if 'Authorization' not in request.headers:
         raise AuthError({
-            'code': 'invalid claims',
-            'description': 'Wrong claims'
+            'code': 'Invalid claims',
+            'description': 'No header Found'
         }, 401)
-    
-    if req_auth_path[0].lower() != 'bearer':
-        raise AuthError({
-            'code': 'Invalid_claims',
-            'description': 'Incorrect JWT'
-        }, 401)
-    
-    return (req_auth_path[1])
+
+        req_auth_header = request.headers['Authorization']
+        req_auth_path = req_auth_header.split(' ')
+
+        if len(req_auth_path) !=2:
+            raise AuthError({
+                'code': 'invalid claims',
+                'description': 'Wrong claims'
+            }, 401)
+        
+        if req_auth_path[0].lower() != 'bearer':
+            raise AuthError({
+                'code': 'Invalid_claims',
+                'description': 'Incorrect JWT'
+            }, 401)
+        
+        return (req_auth_path[1])
 
 
 
-
-
-
+## check permissions
 '''
 @TODO implement check_permissions(permission, payload) method
     @INPUTS
@@ -72,7 +64,19 @@ def get_token_auth_header():
     return true otherwise
 '''
 def check_permissions(permission, payload):
-    raise Exception('Not Implemented')
+    if 'permissions' not in payload:
+        raise AuthError({
+            'code': 'invalid claim',
+            'description': 'Permission not included in jwt'
+        }, 400)
+
+    if permission not in payload['permissions']:
+        raise AuthError({
+            'code': 'Unauthorise',
+            'description': 'Permision not found'
+        }, 403)
+    
+    return True
 
 '''
 @TODO implement verify_decode_jwt(token) method
@@ -100,6 +104,7 @@ def verify_decode_jwt(token):
     it should use the check_permissions method validate claims and check the requested permission
     return the decorator which passes the decoded payload to the decorated method
 '''
+
 def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
