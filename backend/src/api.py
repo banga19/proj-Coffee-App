@@ -157,3 +157,9 @@ def detect_404_error():
 @TODO implement error handler for AuthError
     error handler should conform to general task above
 '''
+# error handler endpoint responsible for any Authentication error occurence 
+@app.errorhandler(AuthError)
+def auth_error(error):
+    response = jsonify(error.error)
+    response.status_code = error.status_code
+    return response
