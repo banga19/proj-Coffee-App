@@ -140,7 +140,7 @@ def unprocessable(error):
     return json.dumps({
         "success": False,
         "error": 422,
-        "message": "unprocessable"
+        "message": "request cannot be processed"
     }), 422
 
 
