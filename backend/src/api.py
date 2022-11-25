@@ -129,11 +129,9 @@ def delete_specific_drink(jwt, id):
         "deteted": id
     })
 
-# Error Handling
-'''
-Example error handling for unprocessable entity
-'''
 
+
+# Error Handling
 
 @app.errorhandler(422)
 def unprocessable(error):
@@ -142,13 +140,6 @@ def unprocessable(error):
         "error": 422,
         "message": "request cannot be processed"
     }), 422
-
-
-'''
-@TODO implement error handlers using the @app.errorhandler(error) decorator
-    each error handler should return (with approprate messages):
-'''
-
 
 '''
 @TODO implement error handler for 404
