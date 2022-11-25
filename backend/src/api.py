@@ -132,6 +132,7 @@ def delete_specific_drink(jwt, id):
 
 
 # Error Handling
+# 422 error handler endpoint
 
 @app.errorhandler(422)
 def unprocessable(error):
@@ -141,10 +142,8 @@ def unprocessable(error):
         "message": "request cannot be processed"
     }), 422
 
-'''
-@TODO implement error handler for 404
-    error handler should conform to general task above
-'''
+
+# 404 error handler endpoint
 @app.errorhandler(404)
 def detect_404_error():
     return jsonify({
