@@ -56,22 +56,29 @@ def retrieve_drinks_detail(jwt):
         "drinks": drink_long_form,
     })
 
-'''
-@TODO implement endpoint
-    POST /drinks
-        it should create a new row in the drinks table
-        it should require the 'post:drinks' permission
-        it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
-        or appropriate status code indicating reason for failure
-'''
-@app.route('/drinks', methods=['POST'])
-@requires_auth('post: drinks')
-def add_new_drink(jwt):
 
-    return json.dumps({
-        "success": True,
-    })
+
+# Endpoint below will add new DRINK
+@app.route('/drinks', methods=['POST'])
+@requires_auth('post:drinks')
+def add_new_drink(jwt):
+    req_body = request.get_json()
+
+    if req_body is not None:
+        new_title = req_body.get('title', None)
+        new_recipe = json.dumps(req_body.get('recipe', None))
+        new_drink  = Drink(title = new_title, recipe = new_recipe)
+        new_drink.insert()
+        
+        return jsonify({
+            "success": True,
+            "drinks": new_drink.long()
+        }) 
+    else:
+        abort(404)
+
+
+
 
 '''
 @TODO implement endpoint
