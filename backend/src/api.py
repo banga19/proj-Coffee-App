@@ -3,6 +3,8 @@ from flask import Flask, request, jsonify, abort
 from sqlalchemy import exc
 import json
 from flask_cors import CORS
+from queue import Empty
+from turtle import title
 
 from .database.models import db_drop_and_create_all, setup_db, Drink
 from .auth.auth import AuthError, requires_auth
@@ -11,27 +13,19 @@ app = Flask(__name__)
 setup_db(app)
 CORS(app)
 
+
 '''
 @TODO uncomment the following line to initialize the datbase
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 !! Running this funciton will add one
 '''
-db_drop_and_create_all()
+
+#comment the code below on first run
+#db_drop_and_create_all()
 
 
-# ROUTES
-#DRINKS_PER_PAGE = 10
-
-# Global Function to GET ALL Drinks
-# create pagination effect for the app
-#def paginated_drinks(request, selection):
-#    page = request.args.get('page', 1, type=int)
-#    start = (page - 1) * DRINKS_PER_PAGE
-#    end = start + DRINKS_PER_PAGE
-
-#    available_drinks = [Drink.format() for question in selection]
-#    current_drinks = available_drinks[start:end] 
+# ROUTES 
 
 '''
 @TODO implement endpoint
@@ -41,14 +35,20 @@ db_drop_and_create_all()
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
-@app.route("/", methods=['GET'])
+
+# Endpoint below gets all DRINKS in short format
 @app.route('/drinks', methods=['GET'])
 def retrieve_drinks():
-    req_drinks = Drink.query.order_by(Drink.id)
+    req_drinks = Drink.query.all()
+
+    if req_drinks is Empty:
+        abort(404)
+
+    drink_short= [drink.short() for drink in req_drinks]
 
     return jsonify({
         "success": True,
-        "drinks": req_drinks,
+        "drinks": drink_short
     })
 
 
@@ -114,8 +114,9 @@ def update_drink(jwt, id):
     returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
-@app.route('/drinks/<int:drink_id>', methods=['DELETE'])
-def delete_specific_drink(drink_id):
+@app.route('/drinks/<int:id>', methods=['DELETE'])
+@requires_auth('delete:drinks')
+def delete_specific_drink(jwt, id):
     return json.dumps({
         "success": True
     })
